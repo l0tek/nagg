@@ -17,7 +17,7 @@
     specific language governing permissions and limitations
     under the License.
 -->
-<html>
+<html ng-app> 
     <head>
         <!--
         Customize this policy to fit your own app's needs. For more guidance, see:
@@ -183,6 +183,15 @@
 
     </main>
 
+    <div class="container">
+
+        <form>
+            <input type="text" ng-model="search">
+            <p>Du suchst gerade nach: {{search}}</p>
+        </form>
+
+    </div>
+
     <!--Footer-->
     <footer class="page-footer center-on-small-only">
 
@@ -195,6 +204,9 @@
 
     <!-- JQuery -->
     <script type="text/javascript" src="js/jquery-2.2.3.min.js"></script>
+
+    <!-- Angular 1.4.0 -->
+    <script type="text/javascript" src="js/angular.js"></script>
 
     <!-- Bootstrap tooltips -->
     <script type="text/javascript" src="js/tether.min.js"></script>
