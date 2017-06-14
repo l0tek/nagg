@@ -1,39 +1,11 @@
 <!DOCTYPE html>
-<!--
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
--->
-<html ng-app> 
+<html ng-app = "mainApp"> 
     <head>
-        <!--
-        Customize this policy to fit your own app's needs. For more guidance, see:
-            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
-        Some notes:
-            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
-            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
-            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
-                * Enable inline JS: add 'unsafe-inline' to default-src
-        -->
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
         <link rel="stylesheet" type="text/css" href="css/index.css">
-    <title>Material Design Bootstrap</title>
+    <title>News Aggregator</title>
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
@@ -85,7 +57,6 @@
 
 <body>
 
-
     <header>
 
         <!--Navbar-->
@@ -95,26 +66,18 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <a class="navbar-brand" href="#">
-                    <strong>Navbar</strong>
+                    <strong>Newsaggregator</strong>
                 </a>
                 <div class="collapse navbar-collapse" id="navbarNav1">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item active">
-                            <a class="nav-link">Home <span class="sr-only">(current)</span></a>
+                            <a href = "#addStudent" class="nav-link">Home <span class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link">Features</a>
+                            <a href = "#viewStudents" class="nav-link">Features</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link">Pricing</a>
-                        </li>
-                        <li class="nav-item dropdown btn-group">
-                            <a class="nav-link dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                            <div class="dropdown-menu dropdown" aria-labelledby="dropdownMenu1">
-                                <a class="dropdown-item">Action</a>
-                                <a class="dropdown-item">Another action</a>
-                                <a class="dropdown-item">Something else here</a>
-                            </div>
                         </li>
                     </ul>
                     <form class="form-inline waves-effect waves-light">
@@ -127,6 +90,9 @@
 
     </header>
 
+    <div ng-view></div>
+
+    <script type = "text/ng-template" id = "addStudent.htm">
     <main>
 
         <!--Main layout-->
@@ -182,15 +148,16 @@
         <!--/.Main layout-->
 
     </main>
+    </script>
 
-    <div class="container">
-
-        <form>
-            <input type="text" ng-model="search">
-            <p>Du suchst gerade nach: {{search}}</p>
-        </form>
-
-    </div>
+    <script type = "text/ng-template" id = "viewStudents.htm">
+        <div ng-repeat="x in myData">
+            <md-card>
+            <img  md-card-image src={x.enclosure.link}>
+            <span>{{x.title}}</span>
+            </md-card>
+        </div>
+    </script>
 
     <!--Footer-->
     <footer class="page-footer center-on-small-only">
@@ -204,9 +171,11 @@
 
     <!-- JQuery -->
     <script type="text/javascript" src="js/jquery-2.2.3.min.js"></script>
+    <script type="text/javascript" src="js/jquery.rss.js"></script>   
 
     <!-- Angular 1.4.0 -->
     <script type="text/javascript" src="js/angular.js"></script>
+    <script type="text/javascript" src="js/angular-route.min.js"></script>
 
     <!-- Bootstrap tooltips -->
     <script type="text/javascript" src="js/tether.min.js"></script>
@@ -220,6 +189,44 @@
     <script>
     new WOW().init();
     </script>
+
+    <script>
+        var mainApp = angular.module("mainApp", ['ngRoute']);
+        mainApp.config(['$routeProvider', function($routeProvider) {
+        $routeProvider.
+        
+        when('/addStudent', {
+            templateUrl: 'addStudent.htm',
+            controller: 'AddStudentController'
+        }).
+        
+        when('/viewStudents', {
+            templateUrl: 'viewStudents.htm',
+            controller: 'ViewStudentsController'
+        }).
+        
+        otherwise({
+            redirectTo: '/addStudent'
+        });
+        }]);
+        
+        mainApp.controller('AddStudentController', function($scope) {
+        $scope.message = "This page will be used to display add student form";
+        });
+        
+        mainApp.controller('ViewStudentsController', function($scope) {
+            $scope.feedSrc = 'https://www.vice.com/de/rss';
+            $scope.myFunction = function () {
+                    $http.get("https://api.rss2json.com/v1/api.json?rss_url=" + $scope.feedSrc).then(function (
+                        response) {
+                        $scope.myData = response.data.items;
+                    });
+                }  
+        });
+
+    </script>
+
+
     
     <script type="text/javascript" src="cordova.js"></script>
 

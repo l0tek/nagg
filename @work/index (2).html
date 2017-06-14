@@ -1,0 +1,97 @@
+
+
+<html lang="en" >
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Angular Material style sheet -->
+  <link rel="stylesheet" href="css/angular-material.min.css">
+  <link rel="stylesheet" href="css/font-awesome.min.css">
+</head>
+<body ng-app="BlankApp" ng-cloak>
+  <!--
+    Your HTML content here
+  -->  
+
+
+
+<div ng-controller="AppCtrl" ng-cloak>
+    <md-nav-bar md-selected-nav-item="currentNavItem" nav-bar-aria-label="navigation links" class="header">
+      <md-nav-item md-nav-click="myFunction($event);" name="page1">
+        <i class="fa fa-home fa-2x" aria-hidden="true"></i>
+      </md-nav-item>
+      <md-nav-item md-nav-click="goto('page2')" name="page2">
+        <i class="fa fa-rss fa-2x" aria-hidden="true"></i>
+      </md-nav-item>
+      <md-nav-item md-nav-click="goto('page3')" name="page3">
+        <i class="fa fa-cog fa-2x" aria-hidden="true"></i>
+      </md-nav-item>
+      <!-- these require actual routing with ui-router or ng-route, so they
+      won't work in the demo
+      <md-nav-item md-nav-href="#page4" name="page5">Page Four</md-nav-item>
+      <md-nav-item md-nav-sref="app.page5" name="page4">Page Five</md-nav-item>
+      You can also add options for the <code>ui-sref-opts</code> attribute.
+      <md-nav-item md-nav-sref="page6" sref-opts="{reload:true, notify:true}">
+        Page Six
+      </md-nav-item>
+      -->
+    </md-nav-bar>
+    <div class="ext-content" style="padding-top:10px;">
+
+            <div ng-repeat="x in myData">
+                <md-card>
+                <img  md-card-image src="{{x.enclosure.link}}">
+                <span>{{x.title}}</span>
+                </md-card>
+            </div>
+      External content for `<span>{{currentNavItem}}</span>`.
+    </div>
+
+    <md-checkbox ng-model="disableInkBar">Disable Ink Bar</md-checkbox>
+
+</div>
+
+
+
+  
+  <!-- Angular Material requires Angular.js Libraries -->
+  <script src="js/angular.min.js"></script>
+  <script src="js/angular-animate.min.js"></script>
+  <script src="js/angular-aria.min.js"></script>
+  <script src="js/angular-messages.min.js"></script>
+
+  <!-- Angular Material Library -->
+  <script src="js/angular-material.min.js"></script>
+
+
+        <script src="js/ng-cordova.js"></script>
+        <script src="cordova.js"></script>
+
+  
+  <!-- Your application bootstrap  -->
+  <script type="text/javascript">    
+    /**
+     * You must include the dependency on 'ngMaterial' 
+     */
+    var app = angular.module('BlankApp', ['ngMaterial']);
+    app.controller("AppCtrl", function($scope, $http){
+        $scope.currentNavItem = 'page1';
+        $scope.feedSrc = 'https://www.vice.com/de/rss';
+        $scope.myFunction = function () {
+                $http.get("https://api.rss2json.com/v1/api.json?rss_url=" + $scope.feedSrc).then(function (
+                    response) {
+                    $scope.myData = response.data.items;
+                });
+            }        
+    });
+  </script>
+  
+</body>
+</html>
+
+<!--
+Copyright 2016 Google Inc. All Rights Reserved. 
+Use of this source code is governed by an MIT-style license that can be in foundin the LICENSE file at http://material.angularjs.org/license.
+-->
+
+
+
