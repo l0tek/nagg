@@ -65,16 +65,16 @@
                 <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav1" aria-controls="navbarNav1" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand" href="#main">
                     <strong>Newsaggregator</strong>
                 </a>
                 <div class="collapse navbar-collapse" id="navbarNav1">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item active">
-                            <a href = "#addStudent" class="nav-link">Home <span class="sr-only">(current)</span></a>
+                            <a href = "#main" class="nav-link">Home <span class="sr-only">(current)</span></a>
                         </li>
                         <li class="nav-item">
-                            <a href = "#viewStudents" class="nav-link">Features</a>
+                            <a href = "#viewStudents?url=https://www.heise.de/newsticker/heise.rdf" class="nav-link">Features</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link">Pricing</a>
@@ -92,7 +92,7 @@
 
     <div ng-view></div>
 
-    <script type = "text/ng-template" id = "addStudent.htm">
+    <script type = "text/ng-template" id = "main.htm">
     <main>
 
         <!--Main layout-->
@@ -105,7 +105,7 @@
                         <!--Card image-->
                         <div class="view overlay hm-white-slight">
                             <img src="img/heise_online_facebook_social_graph.png" class="img-fluid" alt="">
-                            <a href="#">
+                            <a href="#view?url=https://www.heise.de/newsticker/heise.rdf">
                                 <div class="mask waves-effect waves-light"></div>
                             </a>
                         </div>
@@ -120,7 +120,7 @@
                         <!--Card image-->
                         <div class="view overlay hm-white-slight">
                             <img src="img/vice_icon.png" class="img-fluid" alt="">
-                            <a href="#">
+                            <a href="#view?url=https://www.vice.com/de/rss">
                                 <div class="mask waves-effect waves-light"></div>
                             </a>
                         </div>
@@ -135,7 +135,7 @@
                         <!--Card image-->
                         <div class="view overlay hm-white-slight">
                             <img src="img/nzz_icon.png" class="img-fluid" alt="">
-                            <a href="#">
+                            <a href="#view?url=https://www.nzz.ch/startseite.rss">
                                 <div class="mask waves-effect waves-light"></div>
                             </a>
                         </div>
@@ -150,8 +150,21 @@
     </main>
     </script>
 
-    <script type = "text/ng-template" id = "viewStudents.htm">
-        <h1>{{message}}</h1>
+    <script type = "text/ng-template" id = "view.htm">
+        <div ng-repeat="msg in message.items">
+            <!--Post-->
+            <div class="post-wrapper wow fadeIn" data-wow-delay="0.2s">
+            <!--Post data-->
+            <div class="card">
+                <div class="card-block">
+                    <h4 class="card-title">{{msg.title}}</h4>
+                    <p class="card-text">{{msg.description}}</p>
+                    <a href="#" class="btn btn-primary">Button</a>                    
+                </div>
+            </div>    
+            </div>
+            <!--/.Post-->       
+        </div>
     </script>
 
     <!--Footer-->
@@ -193,35 +206,33 @@
         mainApp.config(['$routeProvider', function($routeProvider) {
         $routeProvider.
         
-        when('/addStudent', {
-            templateUrl: 'addStudent.htm',
-            controller: 'AddStudentController'
+        when('/main', {
+            templateUrl: 'main.htm',
+            controller: 'MainController'
         }).
         
-        when('/viewStudents', {
-            templateUrl: 'viewStudents.htm',
-            controller: 'ViewStudentsController'
+        when('/view', {
+            templateUrl: 'view.htm',
+            controller: 'ViewController'
         }).
         
         otherwise({
-            redirectTo: '/addStudent'
+            redirectTo: '/main'
         });
         }]);
         
-        mainApp.controller('AddStudentController', function($scope) {
+        mainApp.controller('MainController', function($scope) {
         $scope.message = "This page will be used to display add student form";
         });
         
-        mainApp.controller('ViewStudentsController', function($scope, $http) {
-                $http.get("https://api.rss2json.com/v1/api.json?rss_url=https://www.vice.com/de/rss")
+        mainApp.controller('ViewController', function($scope, $http, $routeParams) {
+                $scope.url =$routeParams.url
+                $http.get("https://api.rss2json.com/v1/api.json?rss_url=" + $scope.url)
                 .then(function(response) {
                     $scope.message = response.data;
                 });
         });
-
     </script>
-
-
     
     <script type="text/javascript" src="cordova.js"></script>
 

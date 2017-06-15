@@ -151,12 +151,7 @@
     </script>
 
     <script type = "text/ng-template" id = "viewStudents.htm">
-        <div ng-repeat="x in myData">
-            <md-card>
-            <img  md-card-image src={x.enclosure.link}>
-            <span>{{x.title}}</span>
-            </md-card>
-        </div>
+        <h1>{{message}}</h1>
     </script>
 
     <!--Footer-->
@@ -192,6 +187,9 @@
 
     <script>
         var mainApp = angular.module("mainApp", ['ngRoute']);
+
+        
+
         mainApp.config(['$routeProvider', function($routeProvider) {
         $routeProvider.
         
@@ -214,14 +212,11 @@
         $scope.message = "This page will be used to display add student form";
         });
         
-        mainApp.controller('ViewStudentsController', function($scope) {
-            $scope.feedSrc = 'https://www.vice.com/de/rss';
-            $scope.myFunction = function () {
-                    $http.get("https://api.rss2json.com/v1/api.json?rss_url=" + $scope.feedSrc).then(function (
-                        response) {
-                        $scope.myData = response.data.items;
-                    });
-                }  
+        mainApp.controller('ViewStudentsController', function($scope, $http) {
+                $http.get("https://api.rss2json.com/v1/api.json?rss_url=https://www.vice.com/de/rss")
+                .then(function(response) {
+                    $scope.message = response.data;
+                });
         });
 
     </script>
